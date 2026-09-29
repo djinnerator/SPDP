@@ -31,6 +31,13 @@ arr = np.frombuffer(data, dtype=orig_data.dtype).reshape(orig_data.shape)
 
 Maybe I will include the original dtype and shape with the compressed data so it doesn't need to be passed to the decompress function.
 
+Source paper for algorithm:
+SPDP: An Automatically Synthesized Lossless Compression Algorithm for Floating-Point Data
+Steven Claggett, Sahar Azimi, and Martin Burtscher
+Department of Computer Science
+Texas State University
+https://userweb.cs.txstate.edu/~mb92/papers/dcc18.pdf
+
 
 
 
