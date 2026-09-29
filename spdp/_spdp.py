@@ -1,6 +1,7 @@
 import struct
 import numpy as np
 import torch
+from typing import Union
 
 
 def LNVs2_compress(words):
@@ -195,9 +196,11 @@ def LZa6_decompress(byte_seq, original_length):
     return out
 
 
-def spdp_compress(data):
+def spdp_compress(data: Union[torch.Tensor, np.ndarray, bytearray, bytes]):
     """Full SPDP Compression Pipeline[cite: 2]"""
-    data_bytes = bytearray(memoryview(data))
+    if isinstance(data, (torch.Tensor, np.ndarray)):
+        data_bytes = bytearray(memoryview(data))
+    else: data_bytes = data
     # Pad to 4-byte boundaries if necessary (words requirement)
     padding = (4 - (len(data_bytes) % 4)) % 4
     data_bytes += b'\x00' * padding
@@ -218,7 +221,13 @@ def spdp_compress(data):
     return compressed, data.shape, len(data_bytes), type(data), data.dtype
 
 
-def spdp_decompress(compressed_bytes, original_shape, original_length, original_type, original_dtype):
+def spdp_decompress(
+        compressed_bytes: bytearray,
+        original_shape: tuple,
+        original_length: int,
+        original_type: Union[torch.Tensor, np.ndarray, bytearray, bytes],
+        original_dtype,
+):
     """Full SPDP Decompression Pipeline[cite: 2]"""
     # 1. Inverse LZa6[cite: 2]
     stage4 = LZa6_decompress(compressed_bytes, original_length)
